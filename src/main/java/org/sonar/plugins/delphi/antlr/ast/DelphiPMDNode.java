@@ -42,8 +42,10 @@ public class DelphiPMDNode extends DelphiNode implements JavaNode, CompilationUn
   /**
    * C-tor
    * 
-   * @param payload Token
-   * @param tree AST Tree
+   * @param payload
+   *          Token
+   * @param tree
+   *          AST Tree
    */
   public DelphiPMDNode(Token payload, ASTTree tree) {
     super(payload, tree);
@@ -52,7 +54,8 @@ public class DelphiPMDNode extends DelphiNode implements JavaNode, CompilationUn
   /**
    * C-tor, used in DelphiPMD to safely cast from CommonTree to DelphiPMDNode
    * 
-   * @param node CommonTree node
+   * @param node
+   *          CommonTree node
    */
   public DelphiPMDNode(CommonTree node) {
     super(node.getToken());
@@ -145,13 +148,31 @@ public class DelphiPMDNode extends DelphiNode implements JavaNode, CompilationUn
     List<Tree> result = new ArrayList<Tree>();
     for (int i = 0; i < node.getChildCount(); i++) {
       Tree child = node.getChild(i);
-      if (child.getType() == DelphiLexer.TkFunctionName) {
+      if (child.getType() == type) {
         result.add(child);
       } else {
         result.addAll(internalfindAllChilds(child, type));
       }
     }
     return result;
+  }
+
+  public DelphiPMDNode getFirstChildWithType(int nodeType) {
+    return getFirstChildWithType(nodeType, 0);
+  }
+
+  public DelphiPMDNode getFirstChildWithType(int nodeType, int startIndex) {
+    return getFirstChildWithType(nodeType, startIndex, getChildCount());
+  }
+
+  public DelphiPMDNode getFirstChildWithType(int type, int startIndex, int maxIndex) {
+    int childCount = getChildCount();
+    for (int i = startIndex; i < maxIndex && i < childCount; ++i) {
+      if (getChild(i).getType() == type) {
+        return (DelphiPMDNode) getChild(i);
+      }
+    }
+    return null;
   }
 
 }

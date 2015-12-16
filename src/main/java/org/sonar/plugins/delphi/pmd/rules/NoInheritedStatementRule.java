@@ -48,30 +48,18 @@ public class NoInheritedStatementRule extends DelphiRule {
       return;
     }
 
-    Tree parentNode = node.getParent();
-    int nodeIndex = node.getChildIndex();
-    int maxIndex = Math.min(nodeIndex + MAX_LOOK_AHEAD, parentNode.getChildCount());
+    DelphiPMDNode parentNode = (DelphiPMDNode) node.getParent();
+    int startIndex = node.getChildIndex() + 1;
 
-    Tree beginNode = getFirstChildWithType(parentNode, DelphiLexer.BEGIN, nodeIndex + 1, maxIndex);
+    DelphiPMDNode beginNode = parentNode.getFirstChildWithType(DelphiLexer.BEGIN, startIndex,
+        startIndex + MAX_LOOK_AHEAD);
     if (beginNode == null) {
       return;
     }
 
-    if (getFirstChildWithType(beginNode, DelphiLexer.INHERITED) == null) {
+    if (beginNode.getFirstChildWithType(DelphiLexer.INHERITED) == null) {
       addViolation(ctx, node);
     }
   }
 
-  private Tree getFirstChildWithType(Tree node, int nodeType) {
-    return getFirstChildWithType(node, nodeType, 0, node.getChildCount());
-  }
-
-  private Tree getFirstChildWithType(Tree node, int nodeType, int startIndex, int maxIndex) {
-    for (int i = startIndex; i < maxIndex; ++i) {
-      if (node.getChild(i).getType() == nodeType) {
-        return node.getChild(i);
-      }
-    }
-    return null;
-  }
 }
