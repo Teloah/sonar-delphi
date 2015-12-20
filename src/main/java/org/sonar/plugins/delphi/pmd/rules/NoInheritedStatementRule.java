@@ -44,9 +44,16 @@ public class NoInheritedStatementRule extends DelphiRule {
 
   @Override
   public void visit(DelphiPMDNode node, RuleContext ctx) {
+    System.out.println("Node        > [" + node.getText() + "]");
+    if (node.getText().equalsIgnoreCase("interface") || node.getText().equalsIgnoreCase("implementation")) {
+      System.out.println("Section     > " + node.toStringTree());
+    }
+
     if (StringUtils.isBlank(lookFor) || !node.getText().equalsIgnoreCase(lookFor)) {
       return;
     }
+
+    System.out.println("Constructor > " + node.toStringTree());
 
     Tree beginNode = findNextBeginNode(node);
     if (beginNode == null) {
