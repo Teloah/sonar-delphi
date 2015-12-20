@@ -68,17 +68,15 @@ public class NoInheritedStatementRule extends DelphiRule {
   }
 
   private Tree findNextBeginNode(DelphiPMDNode node) {
-    for (int i = node.getChildIndex() + 1; isInSearchingRange(node, i); i++) {
-      Tree child = node.getParent().getChild(i);
+    Tree parent = node.getParent();
+    int maxIndex = Math.min(node.getChildIndex() + MAX_LOOK_AHEAD, parent.getChildCount());
+    for (int i = node.getChildIndex() + 1; i < maxIndex; i++) {
+      Tree child = parent.getChild(i);
       if (child.getType() == DelphiLexer.BEGIN) {
         return child;
       }
     }
     return null;
-  }
-
-  private boolean isInSearchingRange(DelphiPMDNode node, int i) {
-    return i < node.getChildIndex() + MAX_LOOK_AHEAD && i < node.getParent().getChildCount();
   }
 
 }
